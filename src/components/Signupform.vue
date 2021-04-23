@@ -1,13 +1,14 @@
 <template>
-  <form>
+  <form @submit.prevent="handleSubmit">
 		<label for="email">E-mail</label>
 		<input type="email" name="email" required v-model="email"/>
 
 		<label for="password">Password</label>
 		<input type="password" name="password" required v-model="password"/>
+		<div v-if="passwordError" class="error">{{ passwordError }}</div>
 
 		<label for="role">Role</label>
-		<select name="role">
+		<select v-model="role">
 			<option value="developer">Web Developer</option>
 			<option value="designer">Web Designer</option>
 		</select>
@@ -15,12 +16,16 @@
 		<label for="skills">Skills</label>
 		<input type="text" v-model="tempSkill" @keyup="addSkill"/>
 		<div v-for="skill in skills" :key="skill" class="pill">
-			{{ skill }}
+			<span @click="deleteSkill(skill)">{{ skill }}</span>
 		</div>
 
 		<div class="terms">
 			<input type="checkbox" required v-model="terms"/>
 			<label for="terms">Accept terms and conditions</label>
+		</div>
+
+		<div class="submit">
+			<button>Creante an account</button>
 		</div>
 	</form>
 
@@ -36,10 +41,11 @@ export default {
 		return {
 			email: '',
 			password: '',
-			role: '',
+			role: 'developer',
 			terms: false,
 			tempSkill: '',
-			skills: []
+			skills: [],
+			passwordError: '',
 		}
 	},
 	methods: {
@@ -48,7 +54,23 @@ export default {
 				if (!this.skills.includes(this.tempSkill)) {	
 					this.skills.push(this.tempSkill)
 				}
-				this.tempSkill('')
+				this.tempSkill = ''
+			}
+		},
+		deleteSkill(skill) {
+			this.skills = this.skills.filter(item => {return skill !== item})
+		},
+		handleSubmit(){
+			this.passwordError = this.password.length > 6 ? '' 
+				: 'the password must contain at least 6 caracters'
+			
+			if (!this.passwordError) {
+				console.log({
+					email: this.email,
+					password: this.password,
+					role: this.role,
+					skills: this.skills,
+				})
 			}
 		}
 	}
@@ -59,7 +81,7 @@ export default {
 	form {
 		max-width: 420px;
 		margin: 30px auto;
-		background: white;
+		background: #fff;
 		text-align: left;
 		padding: 40px;
 		border-radius: 10px;
@@ -89,4 +111,33 @@ export default {
 		position: relative;
 		top: 2px;
 	}
+	.pill {
+    display: inline-block;
+    margin: 20px 10px 0 0;
+    padding: 6px 12px;
+    background: #eee;
+    border-radius: 20px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    color: #777;
+    cursor: pointer;
+  }
+	button {
+    background: #0b6dff;
+    border: 0;
+    padding: 10px 20px;
+    margin-top: 20px;
+    color: #fff;
+    border-radius: 20px;
+  }
+  .submit {
+    text-align: center;
+  }
+  .error {
+    color: #ff0062;
+    margin-top: 10px;
+    font-size: 0.8em;
+    font-weight: bold;
+  }
 </style>
