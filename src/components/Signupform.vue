@@ -6,11 +6,17 @@
 		<label for="password">Password</label>
 		<input type="password" name="password" required v-model="password"/>
 
-		<label for="password">Role</label>
+		<label for="role">Role</label>
 		<select name="role">
 			<option value="developer">Web Developer</option>
 			<option value="designer">Web Designer</option>
 		</select>
+
+		<label for="skills">Skills</label>
+		<input type="text" v-model="tempSkill" @keyup="addSkill"/>
+		<div v-for="skill in skills" :key="skill" class="pill">
+			{{ skill }}
+		</div>
 
 		<div class="terms">
 			<input type="checkbox" required v-model="terms"/>
@@ -32,6 +38,18 @@ export default {
 			password: '',
 			role: '',
 			terms: false,
+			tempSkill: '',
+			skills: []
+		}
+	},
+	methods: {
+		addSkill(e) {
+			if (e.key === "Enter" && this.tempSkill) {
+				if (!this.skills.includes(this.tempSkill)) {	
+					this.skills.push(this.tempSkill)
+				}
+				this.tempSkill('')
+			}
 		}
 	}
 }
